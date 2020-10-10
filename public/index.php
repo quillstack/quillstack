@@ -2,7 +2,7 @@
 
 use App\Providers\RouteProvider;
 use QuillStack\Framework\App;
-use QuillStack\Framework\RouteProviderInterface;
+use QuillStack\Framework\Interfaces\RouteProviderInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 

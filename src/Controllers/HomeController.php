@@ -6,9 +6,7 @@ namespace App\Controllers;
 
 use App\Responses\HomeResponse;
 use App\Services\VersionService;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use QuillStack\Framework\ControllerInterface;
+use QuillStack\Framework\Interfaces\ControllerInterface;
 
 final class HomeController implements ControllerInterface
 {
@@ -18,12 +16,17 @@ final class HomeController implements ControllerInterface
     public VersionService $versionService;
 
     /**
+     * @var HomeResponse
+     */
+    public HomeResponse $response;
+
+    /**
      * {@inheritDoc}
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(): HomeResponse
     {
-        $version = $this->versionService->getVersion();
-
-        return (new HomeResponse())->setVersion($version);
+        return $this->response->setVersion(
+            $this->versionService->getVersion()
+        );
     }
 }
