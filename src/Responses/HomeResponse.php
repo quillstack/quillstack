@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Responses;
 
-use QuillStack\Http\Response\AbstractResponse;
+use QuillStack\Http\Response\Response;
 
-final class HomeResponse extends AbstractResponse
+final class HomeResponse extends Response
 {
     /**
      * @var string
