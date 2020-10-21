@@ -34,9 +34,14 @@ final class HomeController implements ControllerInterface
      */
     public LoggerInterface $logger;
 
+    /**
+     * {@inheritDoc}
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $this->logger->info('Home Controller');
+        $this->logger->info('Home Controller', [
+            'request' => $request,
+        ]);
 
         return $this->response->setVersion(
             $this->versionService->getVersion()

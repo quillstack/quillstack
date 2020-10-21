@@ -6,9 +6,10 @@ use QuillStack\Framework\Interfaces\RouteProviderInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$app = new App([
+$env = __DIR__ . '/../.env';
+$app = new App($env, [
     RouteProviderInterface::class => RouteProvider::class,
 ]);
 $response = $app->run();
 
-echo $response;
+echo json_encode($response);
