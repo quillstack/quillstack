@@ -23,7 +23,7 @@
         "quillstack/framework": "^0.1"
     },
     "require-dev": {
-        "quillstack/unit-tests": "^0.3"
+        "quillstack/unit-tests": "^0.4"
     },
     "autoload": {
         "psr-4": {
