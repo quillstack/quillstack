@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use App\Providers\CommandProvider;
+use Quillstack\Framework\Console;
+use Quillstack\Framework\Console\CommandProviderInterface;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$console = new Console(__DIR__ . '/../.env', [
+    CommandProviderInterface::class => CommandProvider::class,
+]);
+
+exit($console->run($argv));

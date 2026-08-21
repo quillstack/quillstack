@@ -35,6 +35,9 @@
             "App\\Tests\\": "tests/"
         }
     },
+    "bin": [
+        "bin/quill"
+    ],
     "scripts": {
         "post-create-project-cmd": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -43,12 +46,12 @@
         "test": "unit-tests",
         "test:coverage": "phpdbg -qrr ./vendor/bin/unit-tests"
     },
-    "config": {
-        "sort-packages": true
-    },
     "extra": {
         "branch-alias": {
             "dev-main": "0.2.x-dev"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
