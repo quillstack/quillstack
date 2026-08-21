@@ -5,21 +5,18 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Controllers\HomeController;
-use App\Providers\Groups\ApiRouteProvider;
-use QuillStack\Framework\Interfaces\RouteProviderInterface;
-use QuillStack\Router\Router;
+use App\Controllers\UserController;
+use Quillstack\Framework\Interfaces\RouteProviderInterface;
+use Quillstack\Router\Router;
 
 final class RouteProvider implements RouteProviderInterface
 {
-    public ApiRouteProvider $apiRouteProvider;
-
     /**
      * {@inheritDoc}
      */
-    public function getRoutes(Router &$router): void
+    public function setRoutes(Router $router): void
     {
-        $this->apiRouteProvider->getRoutes($router);
-
-        $router->get('/', HomeController::class);
+        $router->get('/', HomeController::class)->name('home');
+        $router->get('/users/:id', UserController::class)->name('users.show');
     }
 }

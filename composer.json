@@ -1,16 +1,48 @@
 {
+    "name": "quillstack/quillstack",
+    "description": "A project built based on the Quillstack Framework.",
+    "type": "project",
+    "license": "MIT",
+    "keywords": [
+        "quillstack",
+        "framework",
+        "skeleton",
+        "api",
+        "php8"
+    ],
+    "homepage": "https://quillstack.org/",
+    "authors": [
+        {
+            "name": "Radek Ziemniewicz",
+            "email": "radek@quillstack.org"
+        }
+    ],
     "require": {
-        "php": "^7.4",
+        "php": "^8.0",
         "ext-json": "*",
-        "quillstack/framework": "^1.0"
+        "quillstack/framework": "^0.1"
+    },
+    "require-dev": {
+        "quillstack/unit-tests": "^0.3"
     },
     "autoload": {
         "psr-4": {
             "App\\": "src/"
         }
     },
-    "require-dev": {
-        "symfony/var-dumper": "^5.1",
-        "phpunit/phpunit": "^9"
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "serve": "php -S localhost:8000 -t public",
+        "test": "phpdbg -qrr ./vendor/bin/unit-tests"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
