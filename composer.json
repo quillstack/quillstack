@@ -40,7 +40,8 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "serve": "php -S localhost:8000 -t public",
-        "test": "phpdbg -qrr ./vendor/bin/unit-tests"
+        "test": "unit-tests",
+        "test:coverage": "phpdbg -qrr ./vendor/bin/unit-tests"
     },
     "config": {
         "sort-packages": true

@@ -92,6 +92,12 @@ final class HomeController implements ControllerInterface
 composer test
 ```
 
+Coverage needs phpdbg, which is a separate binary shipped with PHP:
+
+```shell
+composer test:coverage
+```
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
