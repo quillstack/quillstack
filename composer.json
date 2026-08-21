@@ -23,6 +23,7 @@
         "quillstack/framework": "^0.6"
     },
     "require-dev": {
+        "phpstan/phpstan": "^2.0",
         "quillstack/unit-tests": "^0.9"
     },
     "autoload": {
@@ -44,7 +45,8 @@
         ],
         "serve": "php -S localhost:8000 -t public",
         "test": "unit-tests",
-        "test:coverage": "phpdbg -qrr ./vendor/bin/unit-tests"
+        "test:coverage": "phpdbg -qrr ./vendor/bin/unit-tests",
+        "stan": "phpstan analyse"
     },
     "extra": {
         "branch-alias": {

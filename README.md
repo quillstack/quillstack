@@ -117,6 +117,12 @@ final class HomeController implements ControllerInterface
 composer test
 ```
 
+Static analysis runs at PHPStan's strictest level:
+
+```shell
+composer stan
+```
+
 Coverage needs phpdbg, which is a separate binary shipped with PHP:
 
 ```shell

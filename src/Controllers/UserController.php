@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Responses\UserResponse;
 use Psr\Http\Message\ServerRequestInterface;
+use Quillstack\Framework\Exceptions\Http\NotFoundHttpException;
 use Quillstack\Framework\Interfaces\ControllerInterface;
 
 final class UserController implements ControllerInterface
@@ -21,8 +22,14 @@ final class UserController implements ControllerInterface
     public function handle(ServerRequestInterface $request): UserResponse
     {
         // Route parameters are put on the request as attributes: `/users/:id` gives `id`.
-        return $this->response->setId(
-            (string) $request->getAttribute('id')
-        );
+        // An attribute is whatever was put there, so it is worth asking what it is before
+        // using it as a string.
+        $id = $request->getAttribute('id');
+
+        if (!is_string($id)) {
+            throw new NotFoundHttpException('No such user');
+        }
+
+        return $this->response->setId($id);
     }
 }
