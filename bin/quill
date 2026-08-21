@@ -4,13 +4,16 @@
 declare(strict_types=1);
 
 use App\Providers\CommandProvider;
+use App\Providers\ServiceProviderRegistry;
 use Quillstack\Framework\Console;
 use Quillstack\Framework\Console\CommandProviderInterface;
+use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $console = new Console(__DIR__ . '/../.env', [
     CommandProviderInterface::class => CommandProvider::class,
+    ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
 ]);
 
 exit($console->run($argv));

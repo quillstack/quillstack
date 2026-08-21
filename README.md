@@ -63,13 +63,36 @@ public function handle(ServerRequestInterface $request): UserResponse
 }
 ```
 
+## Queues
+
+Work which does not have to happen while somebody is waiting goes on a queue. A message says
+what is to be done, a handler does it:
+
+```php
+$queue->push(new SendWelcomeEmail($email));
+```
+
+`src/Providers/QueueProvider.php` says where messages wait and what handles each of them.
+The example writes them under `var/queue` and handles them by appending to `var/welcome.log`.
+
+```shell
+./bin/quill queue:work                    # everything due now, then stop
+./bin/quill queue:work emails             # a queue of its own
+./bin/quill queue:work --keep-running     # wait for more
+```
+
+A message which fails is tried again a few times, waiting longer each time, and then set
+aside rather than kept in the way of everything behind it.
+
 ## Layout
 
 ```
 public/index.php            the entry point
 src/Controllers             controllers, one action each
 src/Responses               response classes, `send()` returns the payload
-src/Providers               route providers
+src/Providers               routes, commands and services the application brings
+src/Messages                what goes on a queue
+src/Handlers                what handles it
 src/Services                your own services
 tests/unit.php              the list of test classes to run
 ```
