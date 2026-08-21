@@ -5,7 +5,7 @@ a light and simple micro-framework to build APIs.
 
 ## Requirements
 
-- PHP 8.0 or newer
+- PHP 8.1 or newer
 - the `json` extension
 - [Composer](https://getcomposer.org/)
 
@@ -68,21 +68,23 @@ public function handle(ServerRequestInterface $request): UserResponse
 ```
 public/index.php            the entry point
 src/Controllers             controllers, one action each
-src/Requests                request classes, injected into controllers
 src/Responses               response classes, `send()` returns the payload
 src/Providers               route providers
 src/Services                your own services
 tests/unit.php              the list of test classes to run
 ```
 
-Controllers, services, requests and responses are resolved by the container. Declare a
-dependency as a public typed property, and it is injected for you:
+Controllers, services and responses are resolved by the container. Ask for what you need
+through the constructor:
 
 ```php
 final class HomeController implements ControllerInterface
 {
-    public HomeResponse $response;
-    public VersionService $versionService;
+    public function __construct(
+        private readonly HomeResponse $response,
+        private readonly VersionService $versionService
+    ) {
+    }
 }
 ```
 

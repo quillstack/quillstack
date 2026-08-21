@@ -11,8 +11,12 @@ use Quillstack\Framework\Interfaces\ControllerInterface;
 
 final class HomeController implements ControllerInterface
 {
-    public HomeResponse $response;
-    public VersionService $versionService;
+    public function __construct(
+        private readonly HomeResponse $response,
+        private readonly VersionService $versionService
+    ) {
+        //
+    }
 
     /**
      * {@inheritDoc}
