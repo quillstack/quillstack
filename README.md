@@ -1,5 +1,12 @@
 # Quillstack
 
+[![Tests](https://github.com/quillstack/quillstack/actions/workflows/tests.yml/badge.svg)](https://github.com/quillstack/quillstack/actions/workflows/tests.yml)
+[![Latest Version](https://img.shields.io/packagist/v/quillstack/quillstack.svg)](https://packagist.org/packages/quillstack/quillstack)
+[![Downloads](https://img.shields.io/packagist/dt/quillstack/quillstack.svg)](https://packagist.org/packages/quillstack/quillstack)
+[![PHP Version](https://img.shields.io/packagist/php-v/quillstack/quillstack)](https://packagist.org/packages/quillstack/quillstack)
+[![StyleCI](https://github.styleci.io/repos/302760000/shield?branch=main)](https://github.styleci.io/repos/302760000?branch=main)
+[![License](https://img.shields.io/packagist/l/quillstack/quillstack)](https://github.com/quillstack/quillstack/blob/main/LICENSE)
+
 A project built on the [Quillstack Framework](https://github.com/quillstack/framework),
 a light and simple micro-framework to build APIs.
 
