@@ -17,6 +17,7 @@ final class ServiceProviderRegistry implements ServiceProviderRegistryInterface
     public function getProviders(): array
     {
         return [
+            DatabaseProvider::class,
             QueueProvider::class,
         ];
     }
