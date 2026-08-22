@@ -84,6 +84,48 @@ The example writes them under `var/queue` and handles them by appending to `var/
 A message which fails is tried again a few times, waiting longer each time, and then set
 aside rather than kept in the way of everything behind it.
 
+## Database
+
+Entities describe the tables, so there are no migration files to write and none to keep in
+order. `src/Entities` holds them and `src/Providers/EntityRegistry.php` names them:
+
+```php
+#[Table('posts')]
+final class Post
+{
+    /** @param Reference<User> $user */
+    public function __construct(
+        #[Id] public ?int $id = null,
+        #[Column('user_id')] public ?int $userId = null,
+        #[Column] public string $title = '',
+        #[BelongsTo(User::class, 'user_id')] public readonly Reference $user = new Reference(),
+    ) {
+    }
+}
+```
+
+Declaring that relation is what puts an index and a foreign key on `posts.user_id`. Nobody
+writes either:
+
+```shell
+$ ./bin/quill db:migrate --pretend
+  CREATE TABLE "posts" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER NULL,
+    "title" TEXT NOT NULL,
+    FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE
+  )
+  CREATE INDEX "posts_user_id_index" ON "posts" ("user_id")
+```
+
+Drop `--pretend` to run it. Nothing is ever removed: a column the entities no longer mention
+is reported and left alone.
+
+Left unconfigured the database is a SQLite file under `var/`; `DB_DSN` in `.env` points it
+anywhere else. Reading is where [quillstack/orm](https://github.com/quillstack/orm) earns its
+keep — touching one entity's relation loads it for every entity read beside it, so walking
+users, their posts and the comments on those is three queries rather than one per row.
+
 ## Layout
 
 ```
@@ -91,6 +133,7 @@ public/index.php            the entry point
 src/Controllers             controllers, one action each
 src/Responses               response classes, `send()` returns the payload
 src/Providers               routes, commands and services the application brings
+src/Entities                the tables, and the relations between them
 src/Messages                what goes on a queue
 src/Handlers                what handles it
 src/Services                your own services

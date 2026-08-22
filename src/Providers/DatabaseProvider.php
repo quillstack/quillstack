@@ -16,6 +16,16 @@ use Quillstack\Orm\Orm;
 final class DatabaseProvider extends ServiceProvider
 {
     /**
+     * An environment value as a string, or nothing where it is absent or empty.
+     */
+    private static function text(string $key): ?string
+    {
+        $value = env($key);
+
+        return is_string($value) && $value !== '' ? $value : null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function register(): array
@@ -30,7 +40,7 @@ final class DatabaseProvider extends ServiceProvider
             $dsn = "sqlite:{$directory}/database.sqlite";
         }
 
-        $connection = new Connection($dsn, env('DB_USER') ?: null, env('DB_PASSWORD') ?: null);
+        $connection = new Connection($dsn, self::text('DB_USER'), self::text('DB_PASSWORD'));
 
         return [
             Connection::class => $connection,
