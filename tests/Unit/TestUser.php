@@ -20,9 +20,35 @@ use Quillstack\UnitTests\AssertEqual;
 
 class TestUser
 {
+    private string $token;
+
     public function __construct(private AssertEqual $assertEqual)
     {
-        //
+        // The tables have to be there before anything asks about a token, and a fresh
+        // checkout has none — the suite has to stand on its own rather than on whatever the
+        // last run left behind.
+        $app = $this->app();
+
+        /** @var Migrator $migrator */
+        $migrator = $app->container->get(Migrator::class);
+        $migrator->migrate([ApiToken::class]);
+
+        /** @var Orm $orm */
+        $orm = $app->container->get(Orm::class);
+        $this->token = Token::create();
+
+        $orm->repository(ApiToken::class)->save(
+            new ApiToken(userId: 1, hash: Token::hash($this->token))
+        );
+    }
+
+    private function app(): App
+    {
+        return new App('', [
+            RouteProviderInterface::class => RouteProvider::class,
+            IdentityProviderInterface::class => Users::class,
+            ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
+        ]);
     }
 
     private function ask(?string $token = null): ResponseInterface
@@ -38,11 +64,7 @@ class TestUser
             $_SERVER['HTTP_AUTHORIZATION'] = "Bearer {$token}";
         }
 
-        return (new App('', [
-            RouteProviderInterface::class => RouteProvider::class,
-            IdentityProviderInterface::class => Users::class,
-            ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
-        ]))->run();
+        return $this->app()->run();
     }
 
     /**
@@ -67,25 +89,7 @@ class TestUser
 
     public function withATokenTheRouteParameterReachesTheController()
     {
-        // A token is made, and only its hash is kept — which is what the provider looks up.
-        $token = Token::create();
-        $app = new App('', [
-            RouteProviderInterface::class => RouteProvider::class,
-            IdentityProviderInterface::class => Users::class,
-            ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
-        ]);
-
-        /** @var Orm $orm */
-        $orm = $app->container->get(Orm::class);
-        /** @var Migrator $migrator */
-        $migrator = $app->container->get(Migrator::class);
-        $migrator->migrate([ApiToken::class]);
-
-        $orm->repository(ApiToken::class)->save(
-            new ApiToken(userId: 1, hash: Token::hash($token))
-        );
-
-        $response = $this->ask($token);
+        $response = $this->ask($this->token);
 
         $this->assertEqual->equal(200, $response->getStatusCode());
         $this->assertEqual->equal('{"id":"42"}', json_encode($response));
