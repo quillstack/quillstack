@@ -44,9 +44,17 @@ The application is then served at http://localhost:8000:
 ```shell
 $ curl http://localhost:8000/
 {"app":"The Quillstack Framework","version":"1.0.0"}
+```
 
-$ curl http://localhost:8000/users/42
-{"id":"42"}
+`/users/:id` is behind authentication, so asking without a token is refused rather than
+answered — see [Authentication](#authentication) for where the token comes from:
+
+```shell
+$ curl http://localhost:8000/users/1
+{"error":{"status":401,"message":"Unauthorized"}}
+
+$ curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/users/1
+{"id":1,"email":"ada@example.com"}
 ```
 
 ## Routes
