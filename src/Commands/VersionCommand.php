@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Services\VersionService;
-use Quillstack\Framework\Console\CommandInterface;
-use Quillstack\Framework\Console\Input;
+use Quillstack\Cli\CommandInterface;
+use Quillstack\Cli\Input;
 use Quillstack\Output\OutputInterface;
 
 final class VersionCommand implements CommandInterface

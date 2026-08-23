@@ -6,8 +6,8 @@ declare(strict_types=1);
 use App\Providers\CommandProvider;
 use App\Providers\EntityRegistry;
 use App\Providers\ServiceProviderRegistry;
+use Quillstack\Cli\CommandProviderInterface;
 use Quillstack\Framework\Console;
-use Quillstack\Framework\Console\CommandProviderInterface;
 use Quillstack\Framework\Database\EntityRegistryInterface;
 use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 
