@@ -4,26 +4,15 @@ declare(strict_types=1);
 
 namespace App\Responses;
 
-use Quillstack\Response\Response;
+use Quillstack\Framework\Http\Responses\SerializedResponse;
 
-final class UserResponse extends Response
+/**
+ * What a user looks like on the wire.
+ *
+ * There is nothing to write here: the entity says which of its fields may go, next to each
+ * field, so adding a column tomorrow does not add it to the API by accident and renaming one
+ * does not quietly drop it.
+ */
+final class UserResponse extends SerializedResponse
 {
-    private string $id = '';
-
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function send(): array
-    {
-        return [
-            'id' => $this->id,
-        ];
-    }
 }

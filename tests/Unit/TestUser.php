@@ -6,6 +6,7 @@ namespace App\Tests\Unit;
 
 use App\Auth\Users;
 use App\Entities\ApiToken;
+use App\Entities\User;
 use App\Providers\RouteProvider;
 use App\Providers\ServiceProviderRegistry;
 use Psr\Http\Message\ResponseInterface;
@@ -22,6 +23,8 @@ class TestUser
 {
     private string $token;
 
+    private int $id;
+
     public function __construct(private AssertEqual $assertEqual)
     {
         // The tables have to be there before anything asks about a token, and a fresh
@@ -31,7 +34,7 @@ class TestUser
 
         /** @var Migrator $migrator */
         $migrator = $app->container->get(Migrator::class);
-        $migrator->migrate([ApiToken::class]);
+        $migrator->migrate([ApiToken::class, User::class]);
 
         /** @var Orm $orm */
         $orm = $app->container->get(Orm::class);
@@ -40,6 +43,15 @@ class TestUser
         $orm->repository(ApiToken::class)->save(
             new ApiToken(userId: 1, hash: Token::hash($this->token))
         );
+
+        // Asked for once per test, so the row may be there already from the last one — and
+        // the email is unique. The database decides the id, so the tests ask what it decided
+        // rather than telling it.
+        $users = $orm->repository(User::class);
+        $ada = $users->one($users->query()->where('email', '=', 'ada@example.com'))
+            ?? $users->save(new User(email: 'ada@example.com'));
+
+        $this->id = $ada->id ?? 0;
     }
 
     private function app(): App
@@ -51,12 +63,12 @@ class TestUser
         ]);
     }
 
-    private function ask(?string $token = null): ResponseInterface
+    private function ask(?string $token = null, ?string $path = null): ResponseInterface
     {
         $_SERVER = [
             'REQUEST_METHOD' => 'GET',
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/users/42',
+            'REQUEST_URI' => $path ?? "/users/{$this->id}",
             'SERVER_PROTOCOL' => '1.1',
         ];
 
@@ -87,11 +99,34 @@ class TestUser
         $this->assertEqual->equal(401, $this->ask('nonsense')->getStatusCode());
     }
 
-    public function withATokenTheRouteParameterReachesTheController()
+    public function withATokenTheUserComesBack()
     {
         $response = $this->ask($this->token);
 
         $this->assertEqual->equal(200, $response->getStatusCode());
-        $this->assertEqual->equal('{"id":"42"}', json_encode($response));
+        $this->assertEqual->equal(
+            '{"id":' . $this->id . ',"email":"ada@example.com"}',
+            json_encode($response)
+        );
+    }
+
+    /**
+     * Nothing here lists the fields: the entity says which of them may go, so a column added
+     * beside them is not in the API the day it is added.
+     */
+    public function andCarriesOnlyWhatTheEntityExposes()
+    {
+        /** @var array<string, mixed> $sent */
+        $sent = json_decode((string) json_encode($this->ask($this->token)), true);
+
+        $this->assertEqual->equal(['id', 'email'], array_keys($sent));
+    }
+
+    public function aUserNobodyHasIsNotFound()
+    {
+        $this->assertEqual->equal(
+            404,
+            $this->ask($this->token, '/users/999999')->getStatusCode()
+        );
     }
 }

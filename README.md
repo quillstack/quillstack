@@ -70,9 +70,51 @@ request as attributes, so a controller reads them from the request it is handed:
 ```php
 public function handle(ServerRequestInterface $request): UserResponse
 {
-    return $this->response->setId(
-        (string) $request->getAttribute('id')
+    $user = $this->orm->repository(User::class)->find(
+        (int) $request->getAttribute('id')
     );
+
+    return $this->response->with($user);
+}
+```
+
+## What goes over the wire
+
+A response says which object it carries, and the entity says which of its fields may go — beside
+the field itself:
+
+```php
+#[Table('users')]
+final class User
+{
+    public function __construct(
+        #[Id, Exposed] public ?int $id = null,
+        #[Column(unique: true), Exposed] public string $email = '',
+        #[HasMany(Post::class, 'user_id')] public readonly Related $posts = new Related(),
+    ) {
+    }
+}
+```
+
+```json
+{"id": 1, "email": "ada@example.com"}
+```
+
+The posts are not there: nobody said they may go, so they do not, and loading them is not
+started to find that out. `src/Responses/UserResponse.php` is empty apart from the class line,
+and there is nothing to keep in step — **a column added tomorrow is not in the API today, and a
+field renamed does not quietly stop being sent.** A response written as a list of fields is a
+place a field can be forgotten in both directions.
+
+A response serving a particular audience says so, and gets the fields marked for it:
+
+```php
+final class AdminUserResponse extends SerializedResponse
+{
+    protected function groups(): array
+    {
+        return ['admin'];
+    }
 }
 ```
 
@@ -186,7 +228,7 @@ users, their posts and the comments on those is three queries rather than one pe
 ```
 public/index.php            the entry point
 src/Controllers             controllers, one action each
-src/Responses               response classes, `send()` returns the payload
+src/Responses               response classes; one carrying an object needs nothing in it
 src/Providers               routes, commands and services the application brings
 src/Entities                the tables, and the relations between them
 src/Messages                what goes on a queue
