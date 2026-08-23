@@ -5,6 +5,7 @@
 [![Downloads](https://img.shields.io/packagist/dt/quillstack/quillstack.svg)](https://packagist.org/packages/quillstack/quillstack)
 [![PHP Version](https://img.shields.io/packagist/php-v/quillstack/quillstack)](https://packagist.org/packages/quillstack/quillstack)
 [![StyleCI](https://github.styleci.io/repos/302760000/shield?branch=main)](https://github.styleci.io/repos/302760000?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/quillstack/quillstack/badge)](https://www.codefactor.io/repository/github/quillstack/quillstack)
 [![License](https://img.shields.io/packagist/l/quillstack/quillstack)](https://github.com/quillstack/quillstack/blob/main/LICENSE)
 
 A project built on the [Quillstack Framework](https://github.com/quillstack/framework),
