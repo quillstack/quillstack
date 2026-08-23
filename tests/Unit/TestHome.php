@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit;
 
+use App\Auth\Users;
 use App\Providers\RouteProvider;
+use App\Providers\ServiceProviderRegistry;
+use Quillstack\Auth\IdentityProviderInterface;
 use Quillstack\Framework\App;
 use Quillstack\Framework\Interfaces\RouteProviderInterface;
+use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 use Quillstack\UnitTests\AssertEqual;
 
 class TestHome
@@ -27,6 +31,8 @@ class TestHome
 
         $app = new App('', [
             RouteProviderInterface::class => RouteProvider::class,
+            IdentityProviderInterface::class => Users::class,
+            ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
         ]);
 
         $this->assertEqual->equal(

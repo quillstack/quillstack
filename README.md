@@ -76,6 +76,48 @@ public function handle(ServerRequestInterface $request): UserResponse
 }
 ```
 
+## Authentication
+
+A route says what reaching it requires, and one place enforces it — the controller has nothing
+to remember:
+
+```php
+$router->get('/users/:id', UserController::class)->name('users.show')->requireAuthentication();
+```
+
+`src/Auth/Users.php` says who a token belongs to, which is the one class an application writes
+to have authentication at all. What is stored is the hash of the token, so a database somebody
+reads holds nothing they could sign in with:
+
+```php
+public function findByToken(string $token): ?Identity
+{
+    $found = $tokens->one($tokens->query()->where('hash', '=', Token::hash($token)));
+
+    return $found === null ? null : new Identity($found->userId, $found->roles());
+}
+```
+
+```shell
+$ curl -i http://localhost:8000/users/42
+HTTP/1.1 401 Unauthorized
+{"error": {"status": 401, "message": "Not authenticated"}}
+
+$ curl -i -H "Authorization: Bearer $TOKEN" http://localhost:8000/users/42
+HTTP/1.1 200 OK
+{"id": "42"}
+```
+
+Making a token, and keeping only what should be kept:
+
+```php
+$token = Token::create();                                    // hand this over, once
+$tokens->save(new ApiToken(userId: 1, hash: Token::hash($token)));
+```
+
+A guarded route in an application which has said nothing about identities is refused at boot,
+before a single request is served — such a route would be open while reading as guarded.
+
 ## Queues
 
 Work which does not have to happen while somebody is waiting goes on a queue. A message says

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Entities\ApiToken;
 use App\Entities\Post;
 use App\Entities\User;
 use Quillstack\Framework\Database\EntityRegistryInterface;
@@ -22,6 +23,7 @@ final class EntityRegistry implements EntityRegistryInterface
         return [
             User::class,
             Post::class,
+            ApiToken::class,
         ];
     }
 }

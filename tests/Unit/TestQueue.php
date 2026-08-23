@@ -7,6 +7,7 @@ namespace App\Tests\Unit;
 use App\Handlers\SendWelcomeEmailHandler;
 use App\Messages\SendWelcomeEmail;
 use App\Providers\ServiceProviderRegistry;
+use Quillstack\Auth\IdentityProviderInterface;
 use Quillstack\Framework\App;
 use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 use Quillstack\Queue\HandlerRegistry;

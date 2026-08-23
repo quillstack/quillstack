@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "quillstack/framework": "^0.8"
+        "quillstack/framework": "^0.9.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.0",
@@ -50,7 +50,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.8.x-dev"
+            "dev-main": "0.9.x-dev"
         }
     },
     "config": {
