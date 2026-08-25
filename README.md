@@ -204,12 +204,8 @@ one — behind a load balancer, or with the worker on a box of its own — swap 
 `QueueProvider` for the table, which every instance can already reach:
 
 ```php
-ClockInterface::class => SystemClock::class,
 Queue::class => DatabaseQueue::class,
 ```
-
-The clock has to be named too: `DatabaseQueue` takes one as an optional argument, and the
-container builds every argument that names a class rather than falling back to the default.
 
 The table is not made by `db:migrate`, which builds what the entities describe and knows
 nothing about this one. Create it once, on deploy or by hand:
