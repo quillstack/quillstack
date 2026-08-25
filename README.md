@@ -207,6 +207,10 @@ one — behind a load balancer, or with the worker on a box of its own — swap 
 Queue::class => DatabaseQueue::class,
 ```
 
+There is also `RedisQueue`, for when the queue is busy enough that the messages are worth
+keeping out of the database. Start with the table: it needs nothing running that an API does
+not already have.
+
 The table is not made by `db:migrate`, which builds what the entities describe and knows
 nothing about this one. Create it once, on deploy or by hand:
 
