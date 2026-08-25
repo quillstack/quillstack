@@ -38,7 +38,7 @@ final class UpdateUserController implements ControllerInterface
         $data = $this->validator->of($request, $this);
         $user = $this->find($request);
 
-        $user->email = (string) $data['email'];
+        $user->email = is_string($data['email'] ?? null) ? $data['email'] : '';
         $this->orm->repository(User::class)->save($user);
 
         return $this->response->with($user);

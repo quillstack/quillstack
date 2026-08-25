@@ -40,13 +40,17 @@ final class CreateUserController implements ControllerInterface
     {
         $data = $this->validator->of($request, $this);
 
+        // The rules said `email`, so it is there and it is a string — but what comes back is
+        // an array of whatever was sent, and asking is cheaper than assuming.
+        $email = is_string($data['email'] ?? null) ? $data['email'] : '';
+
         $users = $this->orm->repository(User::class);
 
-        if ($users->one($users->query()->where('email', '=', $data['email'])) !== null) {
+        if ($users->one($users->query()->where('email', '=', $email)) !== null) {
             throw new ConflictHttpException('That email is already taken');
         }
 
-        $user = new User(email: (string) $data['email']);
+        $user = new User(email: $email);
         $users->save($user);
 
         return $this->response->with($user);
