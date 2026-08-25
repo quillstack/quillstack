@@ -242,6 +242,33 @@ Register both in `QueueProvider`, and publish with
 `$topic->publish(new OrderPlaced($id), 'orders')`. See
 [quillstack/queue](https://quillstack.org/packages/queue#topics) for what is refused and why.
 
+### Creating, changing and removing
+
+```shell
+$ curl -X POST -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+       -d '{"email":"ada@example.com"}' http://localhost:8000/users
+{"id":1,"email":"ada@example.com"}
+
+$ curl -X DELETE -H "Authorization: Bearer $TOKEN" -i http://localhost:8000/users/1
+HTTP/1.1 204 No Content
+```
+
+The rules a body has to follow are on the method that handles it, so the same list decides what
+is accepted and describes it in the document:
+
+```php
+#[Accepts(['email' => ['required', 'email']])]
+public function handle(ServerRequestInterface $request): UserResponse
+{
+    $data = $this->validator->of($request, $this);
+
+    // …
+}
+```
+
+`DELETE /users/:id` requires the `admin` role and answers `204`, which is what `EmptyResponse`
+carries. What each endpoint can refuse with is in the `@throws` above `handle()`.
+
 ### Describing the API
 
 ```shell

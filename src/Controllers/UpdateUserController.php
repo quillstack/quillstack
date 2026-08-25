@@ -9,29 +9,43 @@ use App\Responses\UserResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Quillstack\Framework\Exceptions\Http\NotFoundHttpException;
 use Quillstack\Framework\Interfaces\ControllerInterface;
+use Quillstack\Framework\Validation\Attributes\Accepts;
+use Quillstack\Framework\Validation\Validator;
 use Quillstack\Orm\Orm;
 
-final class UserController implements ControllerInterface
+final class UpdateUserController implements ControllerInterface
 {
     public function __construct(
         private readonly UserResponse $response,
+        private readonly Validator $validator,
         private readonly Orm $orm
     ) {
         //
     }
 
     /**
-     * One user, by id.
+     * Changes a user.
      *
      * @throws NotFoundHttpException
      *
      * {@inheritDoc}
      */
+    #[Accepts([
+        'email' => ['required', 'email'],
+    ])]
     public function handle(ServerRequestInterface $request): UserResponse
     {
-        // Route parameters are put on the request as attributes: `/users/:id` gives `id`.
-        // An attribute is whatever was put there, so it is worth asking what it is before
-        // using it as a number.
+        $data = $this->validator->of($request, $this);
+        $user = $this->find($request);
+
+        $user->email = (string) $data['email'];
+        $this->orm->repository(User::class)->save($user);
+
+        return $this->response->with($user);
+    }
+
+    private function find(ServerRequestInterface $request): User
+    {
         $id = $request->getAttribute('id');
 
         if (!is_string($id) || !ctype_digit($id)) {
@@ -44,6 +58,6 @@ final class UserController implements ControllerInterface
             throw new NotFoundHttpException('No such user');
         }
 
-        return $this->response->with($user);
+        return $user;
     }
 }
