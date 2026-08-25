@@ -19,6 +19,8 @@ final class HomeController implements ControllerInterface
     }
 
     /**
+     * Says which application this is, and which version of it.
+     *
      * {@inheritDoc}
      */
     public function handle(ServerRequestInterface $request): HomeResponse

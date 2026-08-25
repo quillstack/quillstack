@@ -21,6 +21,8 @@ final class UserController implements ControllerInterface
     }
 
     /**
+     * One user, by id.
+     *
      * {@inheritDoc}
      */
     public function handle(ServerRequestInterface $request): UserResponse

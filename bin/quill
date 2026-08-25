@@ -5,10 +5,12 @@ declare(strict_types=1);
 
 use App\Providers\CommandProvider;
 use App\Providers\EntityRegistry;
+use App\Providers\RouteProvider;
 use App\Providers\ServiceProviderRegistry;
 use Quillstack\Cli\CommandProviderInterface;
 use Quillstack\Framework\Console;
 use Quillstack\Framework\Database\EntityRegistryInterface;
+use Quillstack\Framework\Interfaces\RouteProviderInterface;
 use Quillstack\Framework\Providers\ServiceProviderRegistryInterface;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -17,6 +19,8 @@ $console = new Console(__DIR__ . '/../.env', [
     CommandProviderInterface::class => CommandProvider::class,
     ServiceProviderRegistryInterface::class => ServiceProviderRegistry::class,
     EntityRegistryInterface::class => EntityRegistry::class,
+    // Saying where the routes are is what gives the console `openapi:generate`.
+    RouteProviderInterface::class => RouteProvider::class,
 ]);
 
 exit($console->run($argv));

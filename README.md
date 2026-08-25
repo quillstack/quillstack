@@ -242,6 +242,26 @@ Register both in `QueueProvider`, and publish with
 `$topic->publish(new OrderPlaced($id), 'orders')`. See
 [quillstack/queue](https://quillstack.org/packages/queue#topics) for what is refused and why.
 
+### Describing the API
+
+```shell
+./bin/quill openapi:generate --title="Orders" --server=https://api.example.com --out=public/openapi.json
+```
+
+The document is worked out from what is already here — the routes, what a route says it
+requires, the rules the validator runs, and what a response says it carries:
+
+```php
+#[Serializes(User::class)]
+final class UserResponse extends SerializedResponse
+{
+}
+```
+
+Both that and `#[Accepts]` are held to at runtime, so the document describes what the
+application does rather than what somebody wrote down once. See
+[quillstack/framework](https://quillstack.org/packages/framework#describing-the-api).
+
 ## Database
 
 Entities describe the tables, so there are no migration files to write and none to keep in
