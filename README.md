@@ -16,6 +16,16 @@
 A project built on the [Quillstack Framework](https://github.com/quillstack/framework),
 a light and simple micro-framework to build APIs.
 
+## Why this exists
+
+A framework is easiest to judge from a project that already runs on it, and hardest to judge
+from a list of its parts. This is the running project: one command gives you an API which
+answers, with routes, a container, configuration, a database connection and tests already
+wired together the way the framework expects.
+
+It is a starting point rather than a dependency. Everything here is yours to change once it is
+yours — the layout is a suggestion, and nothing in the framework enforces it.
+
 ## Requirements
 
 - PHP 8.1 or newer
@@ -51,7 +61,7 @@ answered — see [Authentication](#authentication) for where the token comes fro
 
 ```shell
 $ curl http://localhost:8000/users/1
-{"error":{"status":401,"message":"Unauthorized"}}
+{"error":{"status":401,"message":"Not authenticated"}}
 
 $ curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/users/1
 {"id":1,"email":"ada@example.com"}
@@ -149,13 +159,13 @@ public function findByToken(string $token): ?Identity
 ```
 
 ```shell
-$ curl -i http://localhost:8000/users/42
+$ curl -i http://localhost:8000/users/1
 HTTP/1.1 401 Unauthorized
-{"error": {"status": 401, "message": "Not authenticated"}}
+{"error":{"status":401,"message":"Not authenticated"}}
 
-$ curl -i -H "Authorization: Bearer $TOKEN" http://localhost:8000/users/42
+$ curl -i -H "Authorization: Bearer $TOKEN" http://localhost:8000/users/1
 HTTP/1.1 200 OK
-{"id": "42"}
+{"id":1,"email":"ada@example.com"}
 ```
 
 Making a token, and keeping only what should be kept:
@@ -276,6 +286,19 @@ Coverage needs phpdbg, which is a separate binary shipped with PHP:
 ```shell
 composer test:coverage
 ```
+
+## The rest of Quillstack
+
+Every part of this is a package which stands on its own, and the whole of
+[Quillstack](https://github.com/quillstack) can be used a piece at a time.
+
+- [quillstack/framework](https://github.com/quillstack/framework) — what this project is built on
+- [quillstack/router](https://github.com/quillstack/router) — the routes above
+- [quillstack/di](https://github.com/quillstack/di) — what builds the controllers
+- [quillstack/orm](https://github.com/quillstack/orm) — the database layer
+- [quillstack/standards](https://github.com/quillstack/standards) — the shape all of them share
+
+Full documentation: https://quillstack.org
 
 ## License
 
