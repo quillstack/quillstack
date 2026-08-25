@@ -217,6 +217,27 @@ $container->get(Queue::class)->migrate();
 Nothing else changes: what pushes messages and what handles them do not know which of the two
 they are talking to.
 
+### One thing happening, several things following
+
+Where a queue hands a message to exactly one worker, a topic hands it to everything that
+subscribed — a receipt to send, a figure to record, a warehouse to tell, none of the three able
+to stop the other two. Subscribers are queues, so `queue:work` handles them as it handles
+everything else:
+
+```php
+$subscriptions = (new Subscriptions())
+    ->subscribe('orders', 'orders.email')
+    ->subscribe('orders', 'orders.ledger');
+
+$handlers
+    ->handleOn('orders.email', OrderPlaced::class, SendReceiptHandler::class)
+    ->handleOn('orders.ledger', OrderPlaced::class, RecordSaleHandler::class);
+```
+
+Register both in `QueueProvider`, and publish with
+`$topic->publish(new OrderPlaced($id), 'orders')`. See
+[quillstack/queue](https://quillstack.org/packages/queue#topics) for what is refused and why.
+
 ## Database
 
 Entities describe the tables, so there are no migration files to write and none to keep in
