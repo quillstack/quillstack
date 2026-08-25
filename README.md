@@ -199,6 +199,10 @@ The example writes them under `var/queue` and handles them by appending to `var/
 A message which fails is tried again a few times, waiting longer each time, and then set
 aside rather than kept in the way of everything behind it.
 
+A worker which is killed while handling one does not take it with it: the message is held
+rather than removed, and comes back when the reservation runs out. Deploying in the middle of a
+queue run is not something to plan around.
+
 `var/queue` is a directory, which is one machine. The moment the application runs on more than
 one — behind a load balancer, or with the worker on a box of its own — swap the driver in
 `QueueProvider` for the table, which every instance can already reach:
