@@ -199,6 +199,28 @@ The example writes them under `var/queue` and handles them by appending to `var/
 A message which fails is tried again a few times, waiting longer each time, and then set
 aside rather than kept in the way of everything behind it.
 
+`var/queue` is a directory, which is one machine. The moment the application runs on more than
+one — behind a load balancer, or with the worker on a box of its own — swap the driver in
+`QueueProvider` for the table, which every instance can already reach:
+
+```php
+ClockInterface::class => SystemClock::class,
+Queue::class => DatabaseQueue::class,
+```
+
+The clock has to be named too: `DatabaseQueue` takes one as an optional argument, and the
+container builds every argument that names a class rather than falling back to the default.
+
+The table is not made by `db:migrate`, which builds what the entities describe and knows
+nothing about this one. Create it once, on deploy or by hand:
+
+```php
+$container->get(Queue::class)->migrate();
+```
+
+Nothing else changes: what pushes messages and what handles them do not know which of the two
+they are talking to.
+
 ## Database
 
 Entities describe the tables, so there are no migration files to write and none to keep in
