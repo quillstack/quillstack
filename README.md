@@ -242,7 +242,7 @@ $handlers
     ->handleOn('orders.ledger', OrderPlaced::class, RecordSaleHandler::class);
 ```
 
-Register both in `QueueProvider`, and publish with
+Register both in `QueueProvider`, build a `Topics\QueueTopic` over the queue, and publish with
 `$topic->publish(new OrderPlaced($id), 'orders')`. See
 [quillstack/queue](https://quillstack.org/packages/queue#topics) for what is refused and why.
 
